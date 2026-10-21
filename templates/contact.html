@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            /*font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #c93f64, #c84065, #226aa2, #c94065, #2269a1);
+            background-size: cover;
+            color: white;
+            overflow-x: hidden;
+            flex-wrap: wrap;*/
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            color: white;
+            background: linear-gradient(to bottom right, #ec4899, #1C76AB);
+            overflow-x: hidden;
+        }
+
+        /* Soft blurred background blobs */
+    .background {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, #ff6b6b, transparent 40%),
+        radial-gradient(circle at 70% 70%, #4d96ff, transparent 40%),
+        radial-gradient(circle at 50% 50%, #c084fc, transparent 40%),
+        radial-gradient(circle at 20% 80%, #fdca40, transparent 40%);
+      filter: blur(80px);
+      z-index: -1;
+    }
+
+        /*nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 50px;
+            background: rgba(0, 0, 0, 0.3);
+        }*/
+
+        /* Navbar */
+    .nav-link {
+      color: white;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      margin: 0 1rem;
+    }
+
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+    .nav-link-active {
+      text-decoration: underline;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+        .logo img {
+            width: 120px;
+        }
+
+        /*nav ul {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav ul a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav ul a:hover {
+            text-decoration: underline;
+        }*/
+
+        .admin-btn {
+            /*background: rgba(255, 28, 96, 0.6);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;*/
+            background-color: #ec4899;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            transition: background-color 0.3s;
+        }
+
+        .admin-btn:hover {
+            background-color: #db2777;
+        }
+
+        /* Hero blur glow (prototype style) */
+    .hero-wrapper {
+    position: relative;
+    overflow: hidden;
+    }
+
+    .hero-glow {
+    position: absolute;
+    inset: -120px;
+    background:
+        radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.55), transparent 45%),
+        radial-gradient(circle at 75% 35%, rgba(255, 255, 255, 0.55), transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.55), transparent 45%);
+    filter: blur(120px);
+    z-index: 0;
+    }
+</style>
+
+
+    <body class="min-h-screen flex flex-col m-0 p-0">
+
+     <div class="background"></div>
+
+     <nav class="flex flex-wrap justify-between items-center p-6">
+
+    <img src="/static/images/logo.png" alt="Logo" class="h-12 w-auto" />
+    <ul class="flex gap-6 text-sm font-medium">
+      <li><a href="{{ url_for('home') }}" class="nav-link {% if active_page=='home' %}nav-link-active{% endif %}">Home</a></li>
+      <li><a href="#report" class="nav-link {% if active_page=='about' %}nav-link-active{% endif %}">About</a></li>
+      <li><a href="{{ url_for('demo') }}" class="nav-link {% if active_page=='demo' %}nav-link-active{% endif %}">Demo</a></li>
+      <li><a href="{{ url_for('faq') }}" class="nav-link {% if active_page=='faq' %}nav-link-active{% endif %}">FAQs</a></li>
+    </ul>
+    <div class="flex gap-4">
+      <a href="{{ url_for('contact')}}" class="bg-white text-pink-500 border border-pink-500 hover:bg-pink-100 px-4 py-2 rounded-full text-sm font-semibold">Contact Us</a>
+      <a href="{{ url_for('admin') }}" class="admin-btn px-4 py-2">Admin Panel</a>
+
+    </div>
+  </nav>
+
+   <section class="hero-wrapper py-20 text-center">
+  
+  <!-- BLUR LAYER -->
+  <div class="hero-glow"></div>
+
+  <!-- CONTENT -->
+  <div class="relative z-10 max-w-4xl mx-auto px-6">
+    <p class="text-sm tracking-wide opacity-90 text-slate-900">
+      FAQs
+    </p>
+
+    <h1 class="mt-3 text-4xl md:text-6xl font-extrabold text-slate-900">
+      ASK US ANYTHING
+    </h1>
+
+    <p class="mt-4 text-sm md:text-base text-slate-900/90">
+      Have Any Questions? We’re here to assist you
+    </p>
+  </div>
+
+</section>
+
+
+
+    <section class="mt-4 mb-4 px-10 flex flex-wrap justify-between items-start gap-10 bg-white/50 backdrop-blur-sm rounded-xl px-20 pt-20 mx-20">
+        <section class="bg-white text-black flex flex-wrap flex-row rounded-md">
+            <div class="mt-20 mx-20 mb-20">
+            <h3 class="text-lg font-extrabold">Contact information</h3>
+            <h4 class="text-md mb-10">Say something to start a live chat!</h4>
+            <h5 class="text-md mb-10"><i class="fa-solid fa-phone-volume"></i> +60134280548</h5>
+            <h5 class="text-md mb-10"><i class="fa-solid fa-location-dot"></i> Kuliyyah of Information and Technology (KICT), IIUM, 53100 Gombak, Selangor</h5>
+        </div>
+    </section>
+        <form action="{{ url_for('contact')}}" method="POST" class="bg-white/10 backdrop-blur-sm p-6 rounded-md flex-1 mb-20">
+        <div class="grid md:grid-cols-2 gap-6 mb-4 mt-4 text-black">
+                <div>
+                    <label class="block mb-2">First Name</label>
+                    <input type="text" name="firstName" required class="w-full bg-transparent border-b-2 border-black text-gray focus:outline-none">
+                </div>
+                <div>
+                    <label class="block mb-2">Last Name</label>
+                    <input type="text" name="lastName" required class="w-full bg-transparent border-b-2 border-black text-gray focus:outline-none">
+                </div>
+                <div>
+                    <label class="block mb-2">Email</label>
+                    <input type="email" name="email" required class="w-full bg-transparent border-b-2 border-black text-gray focus:outline-none">
+                </div>
+                <div>
+                    <label class="block mb-2">Phone Number</label>
+                    <input type="tel" name="phone" class="w-full bg-transparent border-b-2 border-black text-gray focus:outline-none">
+                </div>
+            </div>
+
+        <h4 class="text-black mt-10">Select Subject?</h4>
+        <div class="flex flex-wrap flex-row mt-4 text-black">
+        <input class="mr-4" type="checkbox" name="subject[]" value="General inquiry"><h5 class="mr-4">General inquiry</h5>
+        <input class="mr-4" type="checkbox" name="subject[]" value="Feedback / Suggestion"><h5 class="mr-4">Feedback / Suggestion</h5>
+        <input class="mr-4" type="checkbox" name="subject[]" value="Report a bug"><h5 class="mr-4">Report a bug</h5>
+        <input class="mr-4" type="checkbox" name="subject[]" value="Educational use"><h5 class="mr-4">Educational use</h5>
+        </div>
+        <h4 class="text-black mt-10">Message</h4>
+        <textarea class="message-box rounded-md text-sm items-center justify-between justify-center p-4 pt-4 mt-5 mb-7 border-black text-black focus:outline-none" name="message" rows="5" placeholder="Write your message here"></textarea>
+        <button class="send-message flex flex-col bg-orange-500 rounded-md text-sm px-2 py-2 hover:bg-orange-700 mt-4" type="submit">Send Message</button>
+        </form>
+        
+        
+    </section>
+
+
+    
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script>
+      alert("{{ messages[0] }}");
+    </script>
+  {% endif %}
+{% endwith %}
+
+  </body>
+
+  <footer class="text-center mt-16 mb-0 text-xs opacity-90 bg-blue-800 py-6">Educational purposes only</footer>
+
+  </html>

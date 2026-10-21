@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyScan Admin Dashboard</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <style>
+    body{
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      color: white;
+      background: linear-gradient(to bottom right, #ec4899, #1C76AB);
+      overflow-x: hidden;
+    }
+    .background{
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, #ff6b6b, transparent 40%),
+        radial-gradient(circle at 70% 70%, #4d96ff, transparent 40%),
+        radial-gradient(circle at 50% 50%, #c084fc, transparent 40%),
+        radial-gradient(circle at 20% 80%, #fdca40, transparent 40%);
+      filter: blur(80px);
+      z-index: -1;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-white flex">
+  <div class="background"></div>
+
+  <!-- ✅ Same Homepage button position for ALL admin pages -->
+  <a href="{{ url_for('home') }}"
+     class="fixed top-6 right-6 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition z-50">
+    Homepage
+  </a>
+
+  <!-- ✅ SIDEBAR (shared) -->
+  <aside class="w-64 bg-white/10 backdrop-blur-lg p-6 flex flex-col justify-between rounded-r-3xl shadow-lg">
+    <img src="/static/images/adminlogo.png" alt="Logo" class="h-15 w-auto" />
+    
+
+    <div>
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center text-2xl font-bold">N</div>
+        <div class="ml-3">
+          <h2 class="font-semibold text-white">NetAdmin</h2>
+          <p class="text-sm text-white/70">admin@cyscan.com</p>
+        </div>
+      </div>
+
+      <nav class="space-y-2">
+        <a href="{{ url_for('dashboard') }}"
+           class="flex items-center gap-3 rounded-xl px-3 py-2 transition
+                  {% if request.endpoint == 'dashboard' %}bg-white/20{% else %}hover:bg-white/10{% endif %}">
+          <span>📊</span>
+          <span class="font-semibold whitespace-nowrap">Dashboard</span>
+        </a>
+
+        <a href="{{ url_for('logscan') }}"
+           class="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-white/10">
+          <span>📜</span>
+          <span class="whitespace-nowrap">Logs &amp; Scan History</span>
+        </a>
+
+        <a href="{{ url_for('ml_alert_center') }}"
+           class="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-white/10">
+          <span>🤖</span>
+          <span class="whitespace-nowrap">ML Alert Center</span>
+        </a>
+
+        <a href="{{ url_for('viewdata') }}"
+           class="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-white/10">
+          <span>📄</span>
+          <span class="whitespace-nowrap">FAQs Data</span>
+        </a>
+      </nav>
+    </div>
+
+    <div>
+      <a href="{{ url_for('logout') }}" class="flex items-center gap-2 text-white/80 hover:text-white transition">
+        <span>⬅</span>
+        <span class="whitespace-nowrap">Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content (push down a bit so it never clashes with fixed Homepage button) -->
+  <main class="flex-1 px-12 pb-12 pt-24 flex flex-col items-center text-center">
+    <h1 class="text-3xl mb-6 font-bold max-w-2xl">Port Scan Insights Dashboard</h1>
+    <p class="text-white/80 mb-10 max-w-2xl">
+      Review detected port scans, and identify suspicious activity to protect system integrity.
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl w-full">
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-lg flex flex-col items-center justify-center border border-white/10">
+        <span class="text-4xl mb-3">✅</span>
+        <h3 class="text-xl font-semibold mb-2">Total Scans Today</h3>
+        <p class="text-3xl font-bold">{{ total_scans_today }}</p>
+      </div>
+
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-lg flex flex-col items-center justify-center border border-white/10">
+        <span class="text-4xl mb-3">⬇️</span>
+        <h3 class="text-xl font-semibold mb-2">Open Ports</h3>
+        <p class="text-3xl font-bold">{{ open_ports_total }}</p>
+      </div>
+
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-lg flex flex-col items-center justify-center border border-white/10">
+        <span class="text-4xl mb-3">⚠️</span>
+        <h3 class="text-xl font-semibold mb-2">Suspicious Scans</h3>
+        <p class="text-3xl font-bold">{{ suspicious_scans }}</p>
+      </div>
+
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-lg flex flex-col items-center justify-center border border-white/10">
+        <span class="text-4xl mb-3">👤</span>
+        <h3 class="text-xl font-semibold mb-2">Active User</h3>
+        <p class="text-3xl font-bold">{{ active_users }}</p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

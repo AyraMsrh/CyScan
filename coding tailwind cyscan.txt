@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!--for mobile-friendly page (adjust the size)-->
+  <title>CyScan - User</title>
+  <script src="https://cdn.tailwindcss.com"></script> <!--loads tailwind css, a utility-first CSS framework for styling-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> <!--Loads your own custom stylesheet (style.css) from Flask’s static folder-->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" /> <!--Loads the Inter font from Google Fonts-->
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-link-active { text-decoration: underline; color: #93c5fd; font-weight: 600; } /*highlight the current page link*/
+    .background {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, #ff6b6b, transparent 40%),
+        radial-gradient(circle at 70% 70%, #4d96ff, transparent 40%),
+        radial-gradient(circle at 50% 50%, #c084fc, transparent 40%),
+        radial-gradient(circle at 20% 80%, #fdca40, transparent 40%);
+      filter: blur(80px);
+      z-index: -1;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-white">
+  <!-- soft blobs background -->
+  <div class="background"></div>
+
+  <!-- NAVBAR -->
+  <nav class="flex justify-between items-center p-6">
+    <!-- Logo -->
+    <img src="/static/images/logo.png" alt="Logo" class="h-12 w-auto" />
+
+    <!-- Navigation Links -->
+    <ul class="flex gap-6 text-sm font-medium">
+      <li><a href="/" class="nav-link {% if active_page == 'home' %}nav-link-active{% endif %}">Home</a></li>
+      <li><a href="#report" class="nav-link {% if active_page == 'about' %}nav-link-active{% endif %}">About</a></li>
+      <li><a href="/demo" class="nav-link {% if active_page == 'demo' %}nav-link-active{% endif %}">Demo</a></li>
+      <li><a href="/faqs" class="nav-link {% if active_page == 'faq' %}nav-link-active{% endif %}">FAQs</a></li>
+    </ul>
+
+    <!-- Right-side Buttons -->
+    <div class="flex gap-4">
+      <a href="#contact" class="bg-white text-pink-500 border border-pink-500 hover:bg-pink-100 px-4 py-2 rounded-full text-sm font-semibold">
+        Contact Us
+      </a>
+      <a href="/admin" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+        Admin Panel
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="text-center px-4 mt-6">
+    <h1 class="bg-black text-white inline-block text-3xl md:text-4xl font-extrabold px-6 py-3 rounded-md">
+      WELCOME TO CYSCAN
+    </h1>
+    <p class="mt-4 text-lg">Scan Smarter. Detect Risks. Stay Secure.</p>
+  </section>
+
+  <!-- INFO BOXES -->
+  <section class="flex flex-col md:flex-row justify-center items-stretch gap-8 mt-12 px-4">
+    <!-- Learn box -->
+    <div class="bg-white text-black rounded-xl shadow-md p-6 text-center w-full md:w-1/3">
+      <h3 class="text-lg font-bold mb-2">Learn How It Works</h3>
+      <p class="text-sm text-gray-600 mb-4">First time using this system?</p>
+      <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-semibold text-sm">Know More</button>
+    </div>
+
+    <!-- Start Scan box -->
+    <div class="bg-white text-black rounded-xl shadow-md p-6 text-center w-full md:w-1/3">
+      <h3 class="text-lg font-bold mb-2">Start Your Scan</h3>
+      <p class="text-sm text-gray-600 mb-4">Start scanning and stay protected!</p>
+
+      <!-- Button that opens PARAMETER MODAL -->
+      <button id="openParamModal"
+              class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded font-semibold text-sm">
+        Start Scan
+      </button>
+
+      {% if msg %}
+        <p class="text-sm text-gray-600 mt-3">{{ msg }}</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- REPORT SECTION -->
+  <section id="report" class="flex flex-col md:flex-row justify-center items-start gap-10 mt-16 px-6 scroll-mt-20">
+    <div class="bg-white rounded-xl p-4 w-full md:w-1/3 shadow">
+      <img src="/static/images/piechartabout.png" alt="Port Scan Chart"
+           class="rounded-md w-full md:w-[300px] h-auto object-contain" />
+    </div>
+    <div class="max-w-xl text-sm leading-relaxed">
+      <h2 class="text-2xl font-bold mb-4">Highest Reported Port Scan</h2>
+      <p class="mb-4"><strong>HTTP</strong> (Port 80) accounts for the majority (67%) of all scanned ports, indicating it's the most targeted service — often due to its open/public exposure and widespread use.</p>
+      <p class="mb-4"><strong>SSH</strong> (Port 22) scans represent 18%, suggesting attackers frequently probe for remote access capabilities, which could lead to brute-force attempts.</p>
+      <p><strong>FTP</strong> (Port 21) received 15% of scan activity, a known target due to outdated or misconfigured deployments that may lack secure authentication.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="text-center mt-16 mb-4 text-xs opacity-90">Educational purposes only</footer>
+
+  <!-- ========================= -->
+  <!-- PARAMETER MODAL (INPUTS) -->
+  <!-- ========================= -->
+  <div id="paramModal"
+       class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+       aria-modal="true" role="dialog" aria-labelledby="paramTitle" aria-describedby="paramDesc">
+    <div class="bg-white w-[92%] max-w-lg rounded-2xl p-6 shadow-2xl">
+      <form id="scanForm" method="POST" action="/scan" class="mt-4 space-y-4">
+        <!-- IP -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-800 mb-1">IP Address</label>
+          <input type="text" name="ip" required
+                 placeholder="e.g. 127.0.0.1 or scanme.nmap.org"
+                 class="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400">
+        </div>
+
+        <!-- Protocol -->
+        <div>
+          <p class="block text-sm font-semibold text-gray-800 mb-1">Protocol</p>
+          <div class="flex items-center gap-6">
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="protocol" value="tcp" checked class="accent-pink-500">
+              <span class="text-sm text-gray-700">TCP</span>
+            </label>
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="protocol" value="udp" class="accent-pink-500">
+              <span class="text-sm text-gray-700">UDP</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Ports -->
+        <div>
+          <p class="block text-sm font-semibold text-gray-800 mb-1">Ports</p>
+
+          <!-- Mode chooser -->
+          <div class="flex items-center gap-6 mb-3">
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="port_mode" value="common" checked class="accent-pink-500">
+              <span class="text-sm text-gray-700">Common ports</span>
+            </label>
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="port_mode" value="custom" class="accent-pink-500">
+              <span class="text-sm text-gray-700">Custom list</span>
+            </label>
+          </div>
+
+          <!-- Custom ports input -->
+          <div id="customPortsWrap" class="hidden">
+            <input type="text" name="custom_ports"
+                   placeholder="e.g. 22,80,443 or 1-1024"
+                   class="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400">
+            <p class="text-[11px] text-gray-500 mt-1">
+              Use commas for individual ports (e.g., 22,80,443) or ranges like 1-1024.
+            </p>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" id="cancelParam"
+                  class="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-50">
+            Cancel
+          </button>
+          <button type="submit"
+                  class="px-4 py-2 rounded bg-pink-500 hover:bg-pink-600 text-white font-semibold">
+            Start Scan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================= -->
+  <!-- SCANNING OVERLAY (SPINNER) -->
+  <!-- ========================= -->
+  <div id="scanModal"
+       class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+       aria-modal="true" role="dialog" aria-labelledby="scanTitle" aria-describedby="scanDesc">
+    <div class="bg-white w-[90%] max-w-md rounded-2xl p-6 shadow-2xl text-center">
+      <div class="mx-auto mb-4 h-12 w-12 border-4 border-gray-200 border-top-color rounded-full animate-spin"
+           style="border-top-color:#3b82f6;border-radius:9999px;"></div>
+      <h2 id="scanTitle" class="text-lg font-bold text-black">Scanning…</h2>
+      <p id="scanDesc" class="text-sm text-gray-600 mt-2">We’re scanning the target and classifying port risks.</p>
+      <p id="scanIp" class="text-xs text-gray-500 mt-3"></p>
+    </div>
+  </div>
+
+  <!-- ========================= -->
+<!-- RESULT MODAL (TABLE) -->
+<!-- ========================= -->
+{% if result %}
+<div id="resultModal"
+     class="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+     aria-modal="true" role="dialog">
+  <div class="bg-white w-[95%] max-w-4xl rounded-2xl p-6 shadow-2xl relative">
+    <!-- Close button -->
+    <button onclick="document.getElementById('resultModal').classList.add('hidden')"
+            class="absolute top-3 right-3 text-gray-500 hover:text-black text-xl">&times;</button>
+
+    <!-- Title -->
+    <h3 class="text-xl font-bold mb-4 text-gray-900">
+      Scan Results for <span class="text-pink-600">{{ ip }}</span>
+    </h3>
+
+    <!-- Results Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full border border-gray-200 rounded-lg overflow-hidden text-sm">
+        <thead class="bg-gray-100 text-gray-700">
+          <tr>
+            <th class="p-2 border">Port Number</th>
+            <th class="p-2 border">Status</th>
+            <th class="p-2 border">ML Classification</th>
+            <th class="p-2 border">Request To Block</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in result %}
+          <tr class="hover:bg-gray-50">
+            <td class="p-2 border">{{ row.number }}</td>
+            <td class="p-2 border text-green-600 font-semibold">Open</td>
+            <td class="p-2 border">
+              <span class="{% if row.risk == 'High' %}text-red-600 font-bold
+                            {% elif row.risk == 'Medium' %}text-orange-500 font-bold
+                            {% else %}text-green-600 font-bold{% endif %}">
+                {{ row.risk }} Risk
+              </span>
+            </td>
+            <td class="p-2 border text-center">
+              <button class="request-btn px-3 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded-full">
+                Request
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+  <!-- SCRIPT -->
+  <script>
+    const openParamModalBtn = document.getElementById('openParamModal');
+    const paramModal = document.getElementById('paramModal');
+    const cancelParam = document.getElementById('cancelParam');
+    const scanForm = document.getElementById('scanForm');
+    const scanOverlay = document.getElementById('scanModal');
+    const scanIp = document.getElementById('scanIp');
+    const portModeRadios = document.querySelectorAll('input[name="port_mode"]');
+    const customPortsWrap = document.getElementById('customPortsWrap');
+
+    // open parameter modal
+    openParamModalBtn?.addEventListener('click', () => {
+      paramModal.classList.remove('hidden');
+    });
+
+    // close parameter modal
+    const closeParamModal = () => paramModal.classList.add('hidden');
+    cancelParam?.addEventListener('click', closeParamModal);
+    paramModal.addEventListener('click', (e) => {
+      if (e.target === paramModal) closeParamModal();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeParamModal();
+    });
+
+    // toggle custom ports input visibility
+    const updatePortMode = () => {
+      const mode = [...portModeRadios].find(r => r.checked)?.value;
+      if (mode === 'custom') customPortsWrap.classList.remove('hidden');
+      else customPortsWrap.classList.add('hidden');
+    };
+    portModeRadios.forEach(r => r.addEventListener('change', updatePortMode));
+    updatePortMode();
+
+    // on submit: validate minimal things, show spinner overlay
+    scanForm?.addEventListener('submit', (e) => {
+      const formData = new FormData(scanForm);
+      const ip = formData.get('ip')?.toString().trim();
+      const portMode = formData.get('port_mode');
+
+      if (!ip) {
+        e.preventDefault();
+        alert('Please enter an IP address.');
+        return;
+      }
+      if (portMode === 'custom') {
+        const custom = formData.get('custom_ports')?.toString().trim();
+        if (!custom) {
+          e.preventDefault();
+          alert('Please provide a custom port list (e.g., 22,80,443 or 1-1024).');
+          return;
+        }
+      }
+
+      closeParamModal();
+      if (scanIp && ip) scanIp.textContent = `Target: ${ip}`;
+      scanOverlay.classList.remove('hidden');
+    });
+
+ 
+  {% if result %}
+  document.addEventListener("DOMContentLoaded", () => {
+    scanOverlay.classList.add('hidden');
+    document.getElementById('resultModal').classList.remove('hidden');
+  });
+  {% endif %}
+
+  // make "Request" button light up when clicked
+  document.querySelectorAll('.request-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+      btn.classList.add('bg-yellow-400', 'text-black', 'font-semibold');
+      btn.textContent = 'Requested';
+    });
+  });
+
+
+  </script>
+</body>
+</html>

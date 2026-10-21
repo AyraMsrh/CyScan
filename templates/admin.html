@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyScan Admin Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-link-active { text-decoration: underline; color: #93c5fd; font-weight: 600; }
+    .background {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, #ff6b6b, transparent 40%),
+        radial-gradient(circle at 70% 70%, #4d96ff, transparent 40%),
+        radial-gradient(circle at 50% 50%, #c084fc, transparent 40%),
+        radial-gradient(circle at 20% 80%, #fdca40, transparent 40%);
+      filter: blur(80px);
+      z-index: -1;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-white">
+  <!-- soft blobs background -->
+  <div class="background"></div>
+
+  <!-- NAVBAR -->
+  <nav class="flex justify-between items-center p-6">
+    <!-- Logo -->
+    <img src="/static/images/logo.png" alt="Logo" class="h-12 w-auto" />
+
+    <!-- Navigation Links -->
+     <ul class="flex gap-6 text-sm font-medium">
+      <li><a href="{{ url_for('home') }}" class="nav-link {% if active_page=='home' %}nav-link-active{% endif %}">Home</a></li>
+      <li><a href="#report" class="nav-link {% if active_page=='about' %}nav-link-active{% endif %}">About</a></li>
+      <li><a href="{{ url_for('demo') }}" class="nav-link {% if active_page=='demo' %}nav-link-active{% endif %}">Demo</a></li>
+      <li><a href="{{ url_for('faq') }}" class="nav-link {% if active_page=='faq' %}nav-link-active{% endif %}">FAQs</a></li>
+
+    </ul>
+
+    <!-- Right-side Buttons -->
+    <div class="flex gap-4">
+      <a href="#contact" class="bg-white text-pink-500 border border-pink-500 hover:bg-pink-100 px-4 py-2 rounded-full text-sm font-semibold">
+        Contact Us
+      </a>
+      <!-- FIXED: link now points to 'admin' (GET), not 'admin_login' (POST) -->
+      <a href="{{ url_for('admin') }}" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+        Admin Panel
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Section -->
+  <main class="flex flex-col items-center justify-center text-center px-6 min-h-[80vh]">
+    <div class="mt-10 md:mt-16"></div>
+
+    <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-8">
+      Monitor. Detect.<br>Protect.
+    </h1>
+
+    <p class="max-w-xl text-gray-100 mb-10 text-base md:text-lg">
+      Stay ahead of threats by reviewing traffic anomalies,
+      and responding to port scan alerts in real time.
+    </p>
+
+    <!-- Login Form -->
+    <form action="{{ url_for('admin_login') }}" method="POST"
+          class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 mb-4">
+
+      <input type="email" name="email" placeholder="Your email"
+        class="px-4 py-3 w-64 md:w-72 rounded-full border border-gray-200 bg-white/20 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300"
+        required>
+
+      <input type="password" name="password" placeholder="Your password"
+        class="px-4 py-3 w-64 md:w-72 rounded-full border border-gray-200 bg-white/20 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300"
+        required>
+
+      <button type="submit"
+        class="px-8 py-3 rounded-full bg-indigo-900 hover:bg-indigo-800 text-white font-semibold transition">
+        Login
+      </button>
+    </form>
+
+    <!-- Error / Flash Message -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mt-4">
+          {% for category, message in messages %}
+            <p class="text-red-300 text-sm font-medium">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if error %}
+      <p class="text-red-400 text-sm font-medium mt-4">{{ error }}</p>
+    {% endif %}
+
+    <p class="text-center mt-8 mb-6 text-xs opacity-90">
+      Access restricted to authorized administrators only
+    </p>
+  </main>
+</body>
+</html>

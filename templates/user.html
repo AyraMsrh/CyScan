@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyScan - User</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; }
+    .nav-link-active { text-decoration: underline; color: #93c5fd; font-weight: 600; }
+    .background{
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, #ff6b6b, transparent 40%),
+        radial-gradient(circle at 70% 70%, #4d96ff, transparent 40%),
+        radial-gradient(circle at 50% 50%, #c084fc, transparent 40%),
+        radial-gradient(circle at 20% 80%, #fdca40, transparent 40%);
+      filter: blur(80px);
+      z-index: -1;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-white">
+  <div class="background"></div>
+
+  <!-- NAVBAR -->
+  <nav class="flex justify-between items-center p-6">
+    <img src="/static/images/logo.png" alt="Logo" class="h-12 w-auto" />
+
+    <ul class="flex gap-6 text-sm font-medium">
+      <li><a href="/" class="nav-link {% if active_page == 'home' %}nav-link-active{% endif %}">Home</a></li>
+      <li><a href="javascript:void(0)" id="aboutLink" class="nav-link">About</a></li>
+      <li><a href="/demo" class="nav-link {% if active_page == 'demo' %}nav-link-active{% endif %}">Demo</a></li>
+      <li><a href="{{ url_for('faq') }}" class="nav-link {% if active_page=='faq' %}nav-link-active{% endif %}">FAQs</a></li>
+    </ul>
+
+    <div class="flex gap-4">
+      <a href="{{ url_for('contact') }}"
+         class="bg-white text-pink-500 border border-pink-500 hover:bg-pink-100 px-4 py-2 rounded-full text-sm font-semibold">
+        Contact Us
+      </a>
+      <a href="{{ url_for('admin') }}"
+         class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+        Admin Panel
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="text-center px-4 mt-6">
+    <h1 class="bg-black text-white inline-block text-3xl md:text-4xl font-extrabold px-6 py-3 rounded-md">
+      WELCOME TO CYSCAN
+    </h1>
+    <p class="mt-4 text-lg">Scan Smarter. Detect Risks. Stay Secure.</p>
+  </section>
+
+  <!-- INFO BOXES -->
+  <section class="flex flex-col md:flex-row justify-center items-stretch gap-8 mt-12 px-4">
+    <div class="bg-white text-black rounded-xl shadow-md p-6 text-center w-full md:w-1/3">
+      <h3 class="text-lg font-bold mb-2">Learn How It Works</h3>
+      <p class="text-sm text-gray-600 mb-4">First time using this system?</p>
+      <a href="{{ url_for('demo') }}"><button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded font-semibold text-sm">Know More</button></a>
+    </div>
+
+    <div class="bg-white text-black rounded-xl shadow-md p-6 text-center w-full md:w-1/3">
+      <h3 class="text-lg font-bold mb-2">Start Your Scan</h3>
+      <p class="text-sm text-gray-600 mb-4">Start scanning and stay protected!</p>
+
+      <button id="openParamModal" class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded font-semibold text-sm">
+        Start Scan
+      </button>
+
+      {% if msg %}
+        <p class="text-sm text-gray-600 mt-3">{{ msg }}</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="report" class="mt-20 px-6 md:px-16 py-10 scroll-mt-20 bg-white/10 backdrop-blur-md border border-white/20">
+    <div class="grid md:grid-cols-2 gap-12 items-start text-sm leading-relaxed">
+      <div>
+        <p class="uppercase tracking-[0.25em] text-xs opacity-80 mb-2">Project Overview</p>
+        <h2 class="text-3xl font-extrabold mb-4">Project Overview</h2>
+        <p class="mb-10 opacity-90">
+          CyScan is a machine-learning powered cybersecurity tool designed to detect and prevent potential
+          port scanning attempts in real time. By analyzing unique traffic patterns, CyScan identifies
+          suspicious behavior early—reducing the risk of attackers exploiting open ports.
+        </p>
+
+        <p class="uppercase tracking-[0.25em] text-xs opacity-80 mb-2">The Problem</p>
+        <h2 class="text-3xl font-extrabold mb-4">The Problem</h2>
+        <p class="opacity-90">
+          Open ports are common entry points for cyberattacks. Attackers often use port-scanning techniques
+          to discover vulnerable services before launching exploits. This makes early detection essential.
+        </p>
+      </div>
+
+      <div>
+        <p class="uppercase tracking-[0.25em] text-xs opacity-80 mb-2">Our Solution</p>
+        <h2 class="text-3xl font-extrabold mb-4">Our Solution</h2>
+        <p class="opacity-90 mb-6">
+          CyScan monitors scan results using a trained machine-learning model and classifies detected ports into risk levels.
+          The system presents results clearly to support faster and more informed security assessment.
+        </p>
+
+        <div class="p-6 text-center">
+          <img src="/static/images/DidYouKnow.png" alt="Cybersecurity Illustration" class="w-75 mx-auto mt-4 opacity-90 -rotate-[10deg]" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="text-center mt-16 mb-0 text-xs opacity-90 bg-blue-800 py-6">Educational purposes only</footer>
+
+  <!-- ========================= -->
+  <!-- PARAMETER MODAL -->
+  <!-- ========================= -->
+  <div id="paramModal"
+       class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+       aria-modal="true" role="dialog">
+    <div class="bg-white w-[92%] max-w-lg rounded-2xl p-6 shadow-2xl">
+      <h2 class="text-lg font-bold text-gray-900">Scan Parameters</h2>
+
+      <form id="scanForm" method="POST" action="/scan" class="mt-4 space-y-4">
+        <!-- IP -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-800 mb-1">IP Address</label>
+          <input
+            type="text"
+            name="ip"
+            placeholder="e.g. 127.0.0.1"
+            required
+            class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 caret-pink-500 placeholder-gray-400
+                   focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+        </div>
+
+        <!-- Protocol -->
+        <div>
+          <p class="block text-sm font-semibold text-gray-800 mb-1">Protocol</p>
+          <div class="flex items-center gap-6">
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="protocol" value="tcp" checked class="accent-pink-500">
+              <span class="text-sm text-gray-700">TCP</span>
+            </label>
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="protocol" value="udp" class="accent-pink-500">
+              <span class="text-sm text-gray-700">UDP</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Ports -->
+        <div>
+          <p class="block text-sm font-semibold text-gray-800 mb-1">Ports</p>
+
+          <div class="flex items-center gap-6 mb-3">
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="port_mode" value="common" checked class="accent-pink-500">
+              <span class="text-sm text-gray-700">Common ports</span>
+            </label>
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="port_mode" value="custom" class="accent-pink-500">
+              <span class="text-sm text-gray-700">Custom list</span>
+            </label>
+          </div>
+
+          <!-- ✅ FIXED: custom ports input -->
+          <div id="customPortsWrap" class="hidden">
+            <input
+              type="text"
+              name="custom_ports"
+              placeholder="e.g. 22,80,443 or 1-1024"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 caret-pink-500 placeholder-gray-400
+                     focus:outline-none focus:ring-2 focus:ring-pink-400"
+            />
+            <p class="text-[11px] text-gray-500 mt-1">
+              Use commas for individual ports (e.g., 22,80,443) or ranges like 1-1024.
+            </p>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" id="cancelParam"
+                  class="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-50">
+            Cancel
+          </button>
+          <button type="submit"
+                  class="px-4 py-2 rounded bg-pink-500 hover:bg-pink-600 text-white font-semibold">
+            Start Scan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================= -->
+  <!-- SCANNING OVERLAY -->
+  <!-- ========================= -->
+  <div id="scanModal"
+       class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+       aria-modal="true" role="dialog">
+    <div class="bg-white w-[90%] max-w-md rounded-2xl p-6 shadow-2xl text-center">
+      <div class="mx-auto mb-4 h-12 w-12 rounded-full border-4 border-gray-200 animate-spin"
+           style="border-top-color:#3b82f6;"></div>
+      <h2 class="text-lg font-bold text-black">Scanning…</h2>
+      <p class="text-sm text-gray-600 mt-2">We’re scanning the target and classifying port risks.</p>
+      <p id="scanIp" class="text-xs text-gray-500 mt-3"></p>
+    </div>
+  </div>
+
+  <!-- ========================= -->
+  <!-- RESULT MODAL -->
+  <!-- ========================= -->
+  {% if result %}
+  <div id="resultModal"
+       class="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+       aria-modal="true" role="dialog">
+    <div class="bg-white w-[95%] max-w-4xl rounded-2xl p-6 shadow-2xl relative">
+      <button onclick="document.getElementById('resultModal').classList.add('hidden')"
+              class="absolute top-3 right-3 text-gray-500 hover:text-black text-xl">&times;</button>
+
+      <h3 class="text-xl font-bold mb-4 text-gray-900">
+        Scan Results for <span class="text-pink-600">{{ ip }}</span>
+      </h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-gradient-to-r from-pink-100 to-pink-200 text-gray-800 text-left">
+              <th class="p-3 font-semibold">Port Number</th>
+              <th class="p-3 font-semibold">Status</th>
+              <th class="p-3 font-semibold">ML Classification</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            {% for row in result %}
+            <tr class="hover:bg-pink-50 transition">
+              <td class="p-3 font-medium text-gray-700">{{ row.port }}</td>
+
+              <td class="p-3">
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-600">
+                  Open
+                </span>
+              </td>
+
+              <td class="p-3">
+                <span class="px-2 py-1 text-xs font-bold rounded-full
+                  {% if row.risk == 'High Risk' %}
+                    bg-red-100 text-red-600
+                  {% elif row.risk == 'Medium Risk' %}
+                    bg-yellow-100 text-yellow-600
+                  {% else %}
+                    bg-green-100 text-green-600
+                  {% endif %}">
+                  {{ row.risk }}
+                </span>
+              </td>
+
+            
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+  {% endif %}
+
+  <script>
+    const openParamModalBtn = document.getElementById('openParamModal');
+    const paramModal = document.getElementById('paramModal');
+    const cancelParam = document.getElementById('cancelParam');
+    const scanForm = document.getElementById('scanForm');
+    const scanOverlay = document.getElementById('scanModal');
+    const scanIp = document.getElementById('scanIp');
+    const portModeRadios = document.querySelectorAll('input[name="port_mode"]');
+    const customPortsWrap = document.getElementById('customPortsWrap');
+
+    openParamModalBtn?.addEventListener('click', () => {
+      paramModal.classList.remove('hidden');
+    });
+
+    const closeParamModal = () => paramModal.classList.add('hidden');
+
+    cancelParam?.addEventListener('click', closeParamModal);
+
+    paramModal.addEventListener('click', (e) => {
+      if (e.target === paramModal) closeParamModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeParamModal();
+    });
+
+    const updatePortMode = () => {
+      const mode = [...portModeRadios].find(r => r.checked)?.value;
+      if (mode === 'custom') customPortsWrap.classList.remove('hidden');
+      else customPortsWrap.classList.add('hidden');
+    };
+    portModeRadios.forEach(r => r.addEventListener('change', updatePortMode));
+    updatePortMode();
+
+    scanForm?.addEventListener('submit', (e) => {
+      const formData = new FormData(scanForm);
+      const ip = formData.get('ip')?.toString().trim();
+      const portMode = formData.get('port_mode');
+
+      if (!ip) {
+        e.preventDefault();
+        alert('Please enter an IP address.');
+        return;
+      }
+
+      if (portMode === 'custom') {
+        const custom = formData.get('custom_ports')?.toString().trim();
+        if (!custom) {
+          e.preventDefault();
+          alert('Please provide a custom port list (e.g., 22,80,443 or 1-1024).');
+          return;
+        }
+      }
+
+      closeParamModal();
+      if (scanIp && ip) scanIp.textContent = `Target: ${ip}`;
+      scanOverlay.classList.remove('hidden');
+    });
+
+    {% if result %}
+    document.addEventListener("DOMContentLoaded", () => {
+      scanOverlay.classList.add('hidden');
+      document.getElementById('resultModal').classList.remove('hidden');
+    });
+    {% endif %}
+
+    const aboutLink = document.getElementById("aboutLink");
+    const aboutSection = document.getElementById("report");
+
+    if (aboutLink && aboutSection) {
+      aboutLink.addEventListener("click", function () {
+        const yOffset = -100;
+        const y = aboutSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      });
+    }
+  </script>
+</body>
+</html>

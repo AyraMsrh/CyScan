@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML Alert Center</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <style>
+    body{
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      color: white;
+      background: linear-gradient(to bottom right, #ec4899, #1C76AB);
+      overflow-x: hidden;
+    }
+    .background{
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, #ff6b6b, transparent 40%),
+        radial-gradient(circle at 70% 70%, #4d96ff, transparent 40%),
+        radial-gradient(circle at 50% 50%, #c084fc, transparent 40%),
+        radial-gradient(circle at 20% 80%, #fdca40, transparent 40%);
+      filter: blur(80px);
+      z-index: -1;
+    }
+    .hidden-row{ display:none; }
+
+    /* ✅ NEW: fixed sidebar */
+    .sidebar-fixed{
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    /* ✅ NEW: push main content to the right of w-64 sidebar (16rem) */
+    .main-shift{
+      margin-left: 16rem; /* w-64 = 16rem */
+      width: calc(100% - 16rem);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-white flex">
+  <div class="background"></div>
+
+  <!-- ✅ same position as all admin pages -->
+  <a href="{{ url_for('home') }}"
+     class="fixed top-6 right-6 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition z-50">
+    Homepage
+  </a>
+
+  <!-- ✅ SIDEBAR (same as dashboard/logscan) -->
+  <!-- CHANGED: added sidebar-fixed + keep w-64 exactly -->
+  <aside class="sidebar-fixed w-64 bg-white/10 backdrop-blur-lg p-6 flex flex-col justify-between rounded-r-3xl shadow-lg">
+    <img src="/static/images/adminlogo.png" alt="Logo" class="h-15 w-auto" />
+
+    <div>
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center text-2xl font-bold">N</div>
+        <div class="ml-3">
+          <h2 class="font-semibold text-white">NetAdmin</h2>
+          <p class="text-sm text-white/70">admin@cyscan.com</p>
+        </div>
+      </div>
+
+      <nav class="space-y-2">
+        <a href="{{ url_for('dashboard') }}"
+           class="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-white/10">
+          <span>📊</span>
+          <span class="font-semibold whitespace-nowrap">Dashboard</span>
+        </a>
+
+        <a href="{{ url_for('logscan') }}"
+           class="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-white/10">
+          <span>📜</span>
+          <span class="whitespace-nowrap">Logs &amp; Scan History</span>
+          <span class="ml-auto bg-pink-600 text-xs px-2 py-0.5 rounded-full">8</span>
+        </a>
+
+        <a href="{{ url_for('ml_alert_center') }}"
+           class="flex items-center gap-3 rounded-xl px-3 py-2 transition
+                  {% if request.endpoint == 'ml_alert_center' %}bg-white/20{% else %}hover:bg-white/10{% endif %}">
+          <span>🤖</span>
+          <span class="font-semibold whitespace-nowrap">ML Alert Center</span>
+        </a>
+
+        <a href="{{ url_for('viewdata') }}"
+           class="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-white/10">
+          <span>📄</span>
+          <span class="whitespace-nowrap">FAQs Data</span>
+        </a>
+      </nav>
+    </div>
+
+    <div>
+      <a href="{{ url_for('logout') }}" class="flex items-center gap-2 text-white/80 hover:text-white transition">
+        <span>⬅</span>
+        <span class="whitespace-nowrap">Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <!-- CHANGED: added main-shift so content doesn't go under fixed sidebar -->
+  <main class="main-shift flex-1 px-10 pb-10 pt-24">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-10">
+        <h1 class="text-3xl font-bold">ML-Powered Threat Detection</h1>
+        <p class="text-white/80 mt-2">IPs flagged by the ML model due to suspicious behavior.</p>
+      </div>
+
+      <div class="flex justify-end mb-4">
+        <input id="searchInput" type="text" placeholder="Search IP or attack type..."
+               class="border border-gray-300 rounded-lg px-4 py-2 w-full max-w-md text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-400"
+               onkeyup="filterTable()"/>
+      </div>
+
+      <div id="alertTable" class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl overflow-hidden text-gray-900">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-200 text-gray-700 uppercase tracking-wider">
+            <tr>
+              <th class="px-6 py-3 text-left">IP Address</th>
+              <th class="px-6 py-3 text-left">Confidence</th>
+              <th class="px-6 py-3 text-left">Severity</th>
+              <th class="px-6 py-3 text-left">Action</th>
+              <th class="px-6 py-3 text-left">Delete</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-300">
+            {% for alert in alerts %}
+            <tr class="hover:bg-white/50 transition">
+              <td class="px-6 py-3 font-medium">{{ alert.ip }}</td>
+
+              <td class="px-6 py-3 font-semibold"
+                  style="color:{% if alert.confidence > 90 %}#e11d48{% elif alert.confidence > 75 %}#f97316{% else %}#16a34a{% endif %};">
+                {{ alert.confidence }}%
+              </td>
+
+              <td class="px-6 py-3">{{ alert.severity }}</td>
+
+              <td class="px-6 py-3">
+                <button type="button" onclick="toggleDetails('{{ loop.index }}')"
+                        class="bg-pink-500 hover:bg-pink-600 text-white text-xs font-semibold py-2 px-4 rounded-full shadow-md transition">
+                  View Details ▼
+                </button>
+              </td>
+
+              <td class="px-6 py-3 text-center">
+                <form action="{{ url_for('delete_ml_alert', alert_index=alert.original_index) }}" method="POST"
+                      onsubmit="return confirm('Are you sure you want to delete this alert?');">
+                  <button type="submit" class="text-red-600 hover:text-red-800 text-xl" title="Delete Alert">🗑️</button>
+                </form>
+              </td>
+            </tr>
+
+            <tr id="details-{{ loop.index }}" class="hidden-row bg-gray-50">
+              <td colspan="5" class="p-4 text-sm">
+                <strong>Attack Category:</strong> {{ alert.attack_cat }}<br>
+                <strong>Reason:</strong> {{ alert.reason }}<br>
+                <strong>Average Duration:</strong> {{ alert.dur }} sec<br>
+                <strong>Bytes Sent:</strong> {{ alert.sbytes }}<br>
+                <strong>Bytes Received:</strong> {{ alert.dbytes }}<br>
+                <strong>Recommended Action:</strong> {{ alert.action }}<br>
+
+                <a href="{{ url_for('view_report', ip=alert.ip) }}" target="_blank"
+                   class="inline-flex items-center mt-3 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded shadow transition">
+                  📄 Read Full AI Report
+                </a>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="5" class="text-center py-6 text-gray-600">No alerts detected.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-center text-white/80 text-xs mt-6">
+        ℹ️ Click “View Details” to see full threat context and recommended response.
+      </p>
+    </div>
+  </main>
+
+  <script>
+    function toggleDetails(id){
+      const row = document.getElementById("details-" + id);
+      if (!row) return;
+      row.classList.toggle("hidden-row");
+    }
+
+    function filterTable(){
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const table = document.getElementById("alertTable");
+      const rows = table.querySelectorAll("tbody > tr");
+
+      for (let i = 0; i < rows.length; i++){
+        const row = rows[i];
+        const isDetail = row.id && row.id.startsWith("details-");
+        if (isDetail) continue;
+
+        const text = row.innerText.toLowerCase();
+        const match = text.includes(input);
+        row.style.display = match ? "" : "none";
+
+        // also hide/show its detail row
+        const btn = row.querySelector("button");
+        if (btn){
+          const idx = btn.getAttribute("onclick").match(/\d+/)?.[0];
+          const detailRow = document.getElementById("details-" + idx);
+          if (detailRow) detailRow.style.display = match ? "" : "none";
+        }
+      }
+    }
+  </script>
+</body>
+</html>

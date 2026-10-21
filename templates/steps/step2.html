@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo - Step 2</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+
+  <style>
+    html { scroll-behavior: smooth; }
+
+    body{
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      color: white;
+      background: linear-gradient(to bottom right, #ec4899, #1C76AB);
+      overflow-x: hidden;
+    }
+
+    .background{
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, #ff6b6b, transparent 40%),
+        radial-gradient(circle at 70% 70%, #4d96ff, transparent 40%),
+        radial-gradient(circle at 50% 50%, #c084fc, transparent 40%),
+        radial-gradient(circle at 20% 80%, #fdca40, transparent 40%);
+      filter: blur(90px);
+      z-index: -2;
+      opacity: 0.9;
+    }
+
+    .nav-link {
+      color: white;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      margin: 0 1rem;
+    }
+    .nav-link:hover { text-decoration: underline; }
+    .nav-link-active { text-decoration: underline; color: #93c5fd; font-weight: 600; }
+
+    .admin-btn {
+      background-color: #ec4899;
+      color: white;
+      font-weight: 600;
+      padding: 0.5rem 1.5rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      transition: background-color 0.3s;
+    }
+    .admin-btn:hover { background-color: #db2777; }
+
+    /* hero panel */
+    .hero-panel{
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.60) 0%,
+        rgba(255,255,255,0.30) 55%,
+        rgba(255,255,255,0.00) 100%
+      );
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* wave */
+    .wave{
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 170px;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.92;
+      transition: opacity 180ms linear;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .glass-bar{
+      animation: fadeUp 650ms ease-out both;
+      animation-delay: 120ms;
+      will-change: transform, opacity;
+    }
+
+    /* step dot glow */
+    .dot-active{
+      box-shadow: 0 0 0 rgba(59,130,246,0);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+    .dot-active:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(59,130,246,0.75), 0 0 40px rgba(59,130,246,0.25);
+    }
+    .dot-inactive{
+      transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+    }
+    .dot-inactive:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,0.85);
+      background-color: rgba(255,255,255,0.10);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col m-0 p-0">
+  <div class="background"></div>
+
+  <!-- ✅ NAVBAR (match step5) -->
+  <nav class="flex justify-between items-center p-6">
+    <img src="/static/images/logo.png" alt="Logo" class="h-12 w-auto" />
+
+    <ul class="flex gap-6 text-sm font-medium">
+      <li>
+        <a href="{{ url_for('home') }}" class="nav-link {% if active_page == 'home' %}nav-link-active{% endif %}">
+          Home
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" id="aboutLink" class="nav-link">
+          About
+        </a>
+      </li>
+
+      <li>
+        <a href="{{ url_for('demo') }}" class="nav-link {% if active_page == 'demo' %}nav-link-active{% endif %}">
+          Demo
+        </a>
+      </li>
+
+      <li>
+        <a href="{{ url_for('faq') }}" class="nav-link {% if active_page == 'faq' %}nav-link-active{% endif %}">
+          FAQs
+        </a>
+      </li>
+    </ul>
+
+    <div class="flex gap-4">
+      <a href="{{ url_for('contact')}}"
+         class="bg-white text-pink-500 border border-pink-500 hover:bg-pink-100 px-4 py-2 rounded-full text-sm font-semibold">
+        Contact Us
+      </a>
+      <a href="{{ url_for('admin')}}"
+         class="admin-btn">
+        Admin Panel
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero-panel pt-8 pb-16">
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div class="text-slate-900">
+          <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">
+            CYSCAN DEMO<br/>SCAN TOOL
+          </h1>
+          <p class="mt-3 text-sm md:text-base text-slate-900/80 font-semibold">
+            Learn How to Detect Open Port Risks Using Machine Learning (ML)
+          </p>
+        </div>
+
+        <div class="flex md:justify-end justify-center">
+          <img src="/static/images/demo.png"
+               alt="Demo"
+               class="w-[280px] md:w-[360px] object-contain drop-shadow-xl" />
+        </div>
+      </div>
+    </div>
+
+    <!-- WAVE -->
+    <svg id="heroWave" class="wave" viewBox="0 0 1440 320" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="rgba(0,0,0,0.08)"
+        d="M0,224L80,197.3C160,171,320,117,480,117.3C640,117,800,171,960,186.7C1120,203,1280,181,1360,170.7L1440,160L1440,320L0,320Z">
+      </path>
+    </svg>
+  </header>
+
+  <!-- ✅ GLASS BAR (step2 active, anchor here) -->
+  <section id="step2" class="glass-bar -mt-10">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 shadow-xl px-6 py-6">
+        <p class="text-center text-white/95 text-sm md:text-base font-semibold">
+          Follow the steps below to simulate a port scan and see how our system identifies potential threats
+        </p>
+
+        <!-- PROGRESS (step2 active) -->
+        <div class="mt-5 flex flex-wrap justify-center items-center gap-3 md:gap-5">
+          {% for i in range(1,7) %}
+            {% set is_done = (i < 2) %}
+            {% set is_active = (i == 2) %}
+
+            <button
+              type="button"
+              onclick="goStep({{ i }})"
+              aria-label="Go to step {{ i }}"
+              class="w-5 h-5 rounded-full border-2
+                     {% if is_active %}
+                        bg-blue-500 border-white/80 dot-active
+                     {% elif is_done %}
+                        bg-orange-500 border-white/70 dot-inactive
+                     {% else %}
+                        bg-transparent border-white/60 dot-inactive
+                     {% endif %}">
+            </button>
+
+            {% if i != 6 %}
+              <div class="h-[3px] w-12 md:w-16 rounded-full
+                          {% if i < 2 %}bg-orange-500/90{% else %}bg-white/30{% endif %}">
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP CONTENT (match step5 layout) -->
+  <main class="flex-1">
+    <section class="max-w-5xl mx-auto px-6 mt-10 text-center">
+      <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 drop-shadow-sm">Step 2</h2>
+      <p class="mt-2 text-slate-900/80 font-semibold">
+        Choose the protocol: <span class="font-extrabold">TCP</span> or <span class="font-extrabold">UDP</span>
+      </p>
+
+      <div class="mt-8 flex justify-center">
+        <div class="w-full flex justify-center">
+          <img
+            src="/static/images/step2.png"
+            alt="Step 2 Screenshot"
+            class="w-full max-w-xl max-h-[320px] object-contain rounded-2xl shadow-lg border border-white/30"
+          />
+        </div>
+      </div>
+
+      <button
+        onclick="nextStep()"
+        class="mt-8 px-7 py-2.5 rounded-full text-sm font-semibold
+               bg-orange-500 hover:bg-white hover:text-orange-500
+               border border-transparent hover:border-orange-500
+               transition-all duration-300">
+        Next Step
+      </button>
+    </section>
+  </main>
+
+  <footer class="text-center mt-16 mb-0 text-xs opacity-90 bg-blue-800 py-6">
+    Educational purposes only
+  </footer>
+
+  <script>
+    // ✅ About link behaves same across all pages
+    const aboutLink = document.getElementById("aboutLink");
+    if (aboutLink) {
+      aboutLink.addEventListener("click", function () {
+        window.location.href = "{{ url_for('home') }}?scroll=about";
+      });
+    }
+
+    function nextStep() {
+      window.location.href = "{{ url_for('step', step_num=3) }}#step3";
+    }
+
+    // ✅ Safe routing (no fragile string replace)
+    function goStep(num) {
+      if (num === 1) {
+        window.location.href = "{{ url_for('demo') }}#step1";
+        return;
+      }
+      if (num === 2) {
+        window.location.href = "{{ url_for('step', step_num=2) }}#step2";
+        return;
+      }
+      if (num === 3) {
+        window.location.href = "{{ url_for('step', step_num=3) }}#step3";
+        return;
+      }
+      if (num === 4) {
+        window.location.href = "{{ url_for('step', step_num=4) }}#step4";
+        return;
+      }
+      if (num === 5) {
+        window.location.href = "{{ url_for('step', step_num=5) }}#step5";
+        return;
+      }
+      if (num === 6) {
+        window.location.href = "{{ url_for('step', step_num=6) }}#step6";
+        return;
+      }
+    }
+
+    // Smooth scroll to hash if present
+    window.addEventListener("load", () => {
+      if (window.location.hash) {
+        const el = document.querySelector(window.location.hash);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+
+    // Animate wave opacity on scroll (match step5)
+    const wave = document.getElementById("heroWave");
+    function updateWaveOpacity() {
+      if (!wave) return;
+      const y = window.scrollY || 0;
+      const op = Math.max(0.28, 0.92 - (y / 700));
+      wave.style.opacity = op.toFixed(2);
+    }
+    window.addEventListener("scroll", updateWaveOpacity, { passive: true });
+    updateWaveOpacity();
+  </script>
+</body>
+</html>

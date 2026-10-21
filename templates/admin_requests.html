@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Action Requests | CyScan Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-link-active { text-decoration: underline; color: #93c5fd; font-weight: 600; }
+    .background {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, #ff6b6b, transparent 40%),
+        radial-gradient(circle at 70% 70%, #4d96ff, transparent 40%),
+        radial-gradient(circle at 50% 50%, #c084fc, transparent 40%),
+        radial-gradient(circle at 20% 80%, #fdca40, transparent 40%);
+      filter: blur(80px);
+      z-index: -1;
+    }
+  </style>
+</head>
+<body class="flex min-h-screen text-white">
+
+ <!-- Background -->
+  <div class="background"></div>
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white/10 backdrop-blur-lg p-6 flex flex-col justify-between rounded-r-3xl shadow-lg">
+    <!-- Logo -->
+    <img src="/static/images/adminlogo.png" alt="Logo" class="h-15 w-auto mb-4" />
+
+    <div>
+      <!-- Profile -->
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center text-2xl font-bold">N</div>
+        <div class="ml-3">
+          <h2 class="font-semibold">NetAdmin</h2>
+          <p class="text-sm text-white/70">admin@cyscan.com</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="space-y-2">
+        <a href="{{ url_for('dashboard') }}" class="flex items-center space-x-3 hover:bg-white/20 rounded-xl px-3 py-2 transition">
+          <span>📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="{{ url_for('admin_requests') }}" class="flex items-center space-x-3 bg-white/20 rounded-xl px-3 py-2 transition">
+          <span>📨</span>
+          <span>User Action Requests</span>
+          <span class="ml-auto bg-pink-600 text-xs px-2 py-0.5 rounded-full">21</span>
+        </a>
+        <a href="#" class="flex items-center space-x-3 hover:bg-white/20 rounded-xl px-3 py-2 transition">
+          <span>🛡️</span>
+          <span>Firewall Rule Management</span>
+        </a>
+        <a href="#" class="flex items-center space-x-3 hover:bg-white/20 rounded-xl px-3 py-2 transition">
+          <span>📜</span>
+          <span>Logs & Scan History</span>
+          <span class="ml-auto bg-pink-600 text-xs px-2 py-0.5 rounded-full">8</span>
+        </a>
+        <a href="{{ url_for('ml_alert_center') }}" class="flex items-center space-x-3 hover:bg-white/20 rounded-xl px-3 py-2 transition">
+          <span>🤖</span>
+          <span>ML Alert Center</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Logout -->
+    <div>
+      <a href="{{ url_for('logout') }}" class="flex items-center space-x-2 text-white/80 hover:text-white transition">
+        <span>⬅</span>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+<!-- Main Content -->
+  <main class="flex-1 p-10 bg-gradient-to-br from-pink-500/40 via-purple-500/30 to-blue-500/30 backdrop-blur-2xl rounded-l-3xl overflow-y-auto">
+
+    <!-- Page Title -->
+    <div class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-white">User Action Requests</h1>
+      <p class="text-white/80 mt-2 text-sm">
+        Below are requests submitted by users for firewall actions.<br>
+        Please review and approve or decline.
+      </p>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl overflow-hidden text-gray-800 max-w-5xl mx-auto">
+      <table class="min-w-full">
+        <thead class="bg-gray-100 text-gray-700 text-sm uppercase tracking-wider">
+          <tr>
+            <th class="px-6 py-3 text-left">User</th>
+            <th class="px-6 py-3 text-left">IP Address</th>
+            <th class="px-6 py-3 text-left">Port</th>
+            <th class="px-6 py-3 text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for req in requests %}
+          <tr>
+            <td class="px-6 py-4 font-medium">{{ req.user }}</td>
+            <td class="px-6 py-4">{{ req.ip }}</td>
+            <td class="px-6 py-4">{{ req.port }}</td>
+            <td class="px-6 py-4 text-center space-x-2">
+              <form method="POST" action="{{ url_for('approve_request', request_id=req.id) }}" style="display:inline;">
+                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm">Approve</button>
+              </form>
+              <form method="POST" action="{{ url_for('reject_request', request_id=req.id) }}" style="display:inline;">
+                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm">Reject</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" class="text-center py-6 text-gray-500">No pending requests found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="text-center text-gray-400 text-sm py-4">
+        show more..
+      </div>
+    </div>
+
+    <!-- Footer Note -->
+    <p class="text-center text-white/80 text-xs mt-6">
+      ℹ️ Approving a request will automatically update the firewall ruleset
+    </p>
+
+  </main>
+</body>
+</html>

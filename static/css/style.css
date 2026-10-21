@@ -1,0 +1,116 @@
+/* Use Inter font globally */
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom right, #ec4899, #1C76AB); /* purple to pink */
+  min-height: 100vh;
+}
+
+/* Logo size in navbar */
+.logo {
+  height: 48px;
+  width: auto;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh; /* full viewport height */
+  width: 250px;  /* adjust as your layout */
+  background: linear-gradient(180deg, #f46bb2, #a357c2);
+  color: white;
+  overflow-y: auto; /* scroll content if needed */
+  z-index: 100; /* keeps sidebar above other elements */
+}
+
+.main-content {
+  margin-left: 250px; /* same width as sidebar */
+  padding: 20px;
+}
+
+
+/* Navbar link styles */
+.nav-link {
+  color: white;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: none;
+  margin: 0 1rem;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+/* Admin panel button */
+.admin-btn {
+  background-color: #ec4899;
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  transition: background-color 0.3s;
+}
+
+.admin-btn:hover {
+  background-color: #db2777;
+}
+
+/* Hero banner */
+.hero-title {
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  font-weight: 800;
+  padding: 1rem 2rem;
+}
+
+.hero-sub {
+  color: white;
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  letter-spacing: 0.03em;
+}
+
+/* Info box styles */
+.card {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  padding: 2rem;
+  text-align: center;
+  flex: 1;
+}
+
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.card-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.card-btn {
+  background-color: #f97316;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: background-color 0.3s;
+}
+
+.card-btn:hover {
+  background-color: #ea580c;
+}
+
+/* Report image */
+.report-img {
+  width: 100%;
+  max-width: 300px;
+}

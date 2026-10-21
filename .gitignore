@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+.ipynb_checkpoints/
+.env
+
+# Your possible virtual env folder (delete this line if CyScan is real source code)
+CyScan/
+
+# Editor / OS junk
+.vscode/
+desktop.ini
+Thumbs.db
+~$*
+
+# Private data and large datasets
+*.db
+*.csv
+*.pcap

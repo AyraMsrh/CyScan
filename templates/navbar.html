@@ -1,0 +1,10 @@
+<nav class="flex justify-between items-center p-6 text-white">
+  <div class="text-2xl font-bold">CyScan</div>
+  <ul class="flex gap-6 text-sm font-medium">
+    <li><a href="/" class="{% if active_page == 'home' %}text-yellow-300 underline font-bold{% else %}hover:underline{% endif %}">Home</a></li>
+    <li><a href="/about" class="{% if active_page == 'about' %}text-yellow-300 underline font-bold{% else %}hover:underline{% endif %}">About</a></li>
+    <li><a href="/demo" class="{% if active_page == 'demo' %}text-yellow-300 underline font-bold{% else %}hover:underline{% endif %}">Demo</a></li>
+    <li><a href="/faqs" class="{% if active_page == 'faqs' %}text-yellow-300 underline font-bold{% else %}hover:underline{% endif %}">FAQs</a></li>
+  </ul>
+  <a href="/admin" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold">Admin Panel</a>
+</nav>

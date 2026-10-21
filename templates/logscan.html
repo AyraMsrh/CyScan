@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyScan Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+     body {
+            /*font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #c93f64, #c84065, #226aa2, #c94065, #2269a1);
+            background-size: cover;
+            color: white;
+            overflow-x: hidden;
+            flex-wrap: wrap;*/
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            color: white;
+            background: linear-gradient(to bottom right, #ec4899, #1C76AB);
+            overflow-x: hidden;
+        }
+
+        /* Soft blurred background blobs */
+    .background {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, #ff6b6b, transparent 40%),
+        radial-gradient(circle at 70% 70%, #4d96ff, transparent 40%),
+        radial-gradient(circle at 50% 50%, #c084fc, transparent 40%),
+        radial-gradient(circle at 20% 80%, #fdca40, transparent 40%);
+      filter: blur(80px);
+      z-index: -1;
+    }
+
+        /*nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 50px;
+            background: rgba(0, 0, 0, 0.3);
+        }*/
+
+        /* Navbar */
+    .nav-link {
+      color: white;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      margin: 0 1rem;
+    }
+
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+    .nav-link-active {
+      text-decoration: underline;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-white flex">
+  <!-- Background -->
+  <div class="background"></div>
+
+  <!-- Sidebar -->
+  <aside class="fixed top-0 left-0 h-screen w-64 bg-white/10 backdrop-blur-lg p-6 flex flex-col justify-between rounded-r-3xl shadow-lg">
+    <!-- Logo -->
+    <img src="/static/images/adminlogo.png" alt="Logo" class="h-15 w-auto" />
+
+    <div>
+      <!-- Profile -->
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center text-2xl font-bold">
+          N
+        </div>
+        <div class="ml-3">
+          <h2 class="font-semibold text-white">NetAdmin</h2>
+          <p class="text-sm text-white/70">admin@cyscan.com</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="space-y-2">
+        <a href="{{ url_for('dashboard') }}" class="flex items-center space-x-3 hover:bg-white/20 rounded-xl px-3 py-2">
+          <span>📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="flex items-center space-x-3 bg-white/10 rounded-xl px-3 py-2">
+          <span>📜</span>
+          <span class="font-semibold">Logs & Scan History</span>
+        </a>
+        <a href="{{ url_for('ml_alert_center') }}" class="flex items-center space-x-3 hover:bg-white/10 rounded-xl px-3 py-2">
+          <span>🤖</span>
+          <span>ML Alert Center</span>
+        </a>
+        <a href="{{ url_for('viewdata') }}" class="flex items-center space-x-3 hover:bg-white/10 rounded-xl px-3 py-2">
+          <span>✉️</span>
+          <span>FAQs Data</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Logout -->
+    <div>
+      <a href="{{ url_for('logout') }}" class="flex items-center space-x-2 text-white/80 hover:text-white transition">
+        <span>⬅</span>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+        <main class="ml-64 p-8 min-h-screen w-full">
+      <div class="absolute top-6 right-10">
+      <a href="{{ url_for('home') }}" 
+      class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md transition">
+        Homepage
+      </a>
+    </div>
+      <div class="text-center mb-10">
+        <div>
+            <h1 class="text-3xl font-bold mb-1">Log & Scan History</h1>
+            <p class="text-white/70">Track historical scan data actions over time.</p>
+        </div>
+        
+    
+      </div>
+
+       
+
+            <div class="flex flex-wrap overflow-x-auto">
+                <table class="min-w-full text-black/80 border-separate border-spacing-y-2">
+                    <thead class="text-sm font-semibold uppercase tracking-wider text-white bg-pink-600 rounded-md">
+                        <tr>
+                            <th class="py-3 px-2 text-left">Timestamp</th>
+                            <th class="py-3 px-2 text-left">Scanned IP</th>
+                            <th class="py-3 px-2 text-left">Open Port Found</th>
+                            <th class="py-3 px-2 text-left">Risk Status</th>
+                            <th class="py-3 px-2 text-left">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/20">
+    {% for log in history %}
+    <tr class="bg-white/100 rounded-lg">
+        <td class="py-3 px-2 text-sm">
+            <div class="font-bold">{{ log.date_display }}</div>
+            <div class="text-xs text-black/60">{{ log.time_display }}</div>
+        </td>
+        <td class="py-3 px-2 text-sm font-mono">{{ log.scanned_ip }}</td>
+        <td class="py-3 px-2 text-sm">{{ log.open_ports_found }}</td>
+        
+        <td class="py-3 px-2 text-sm">
+            {% if log.is_high_risk == 1 %}
+                <span class="px-3 py-1 rounded-full font-bold text-xs bg-red-800 text-white">HIGH RISK</span>
+            {% else %}
+                <span class="px-3 py-1 rounded-full font-bold text-xs bg-green-500 text-white">LOW RISK</span>
+            {% endif %}
+        </td>
+
+        <td class="py-3 px-6 text-center">
+          <form action="{{ url_for('delete_scan_log', log_id=log.id)}}" method="POST" onsubmit="return confirm('Delete this scan history?');">
+            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text=xs">Delete</button>
+          </form>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+                </table>
+            </div>
+
+            {% if not history %}
+            <p class="text-center py-10 text-white/70">No scan history available.</p>
+            {% endif %}
+
+            <div class="mt-8 pt-4 border-t border-white/20 text-center text-xs text-white/60">
+                <p class="flex items-center justify-center">
+                    <span class="mr-2">ⓘ</span> Immediate action recommended on high-risk alerts.
+                </p>
+            </div>
+
+        </div>
+    </main>
+</body>
+</html>

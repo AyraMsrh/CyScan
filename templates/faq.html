@@ -1,0 +1,255 @@
+
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+        
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            color: white;
+            background: linear-gradient(to bottom right, #ec4899, #1C76AB);
+            overflow-x: hidden;
+        }
+
+        /* Soft blurred background blobs */
+    .background {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 30%, #ff6b6b, transparent 40%),
+        radial-gradient(circle at 70% 70%, #4d96ff, transparent 40%),
+        radial-gradient(circle at 50% 50%, #c084fc, transparent 40%),
+        radial-gradient(circle at 20% 80%, #fdca40, transparent 40%);
+      filter: blur(90px);
+      z-index: -1;
+      opacity: 0.9;
+    }
+
+      
+    .nav-link {
+      color: rgba(255,255,255,0.9);/*color: white;*/
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      margin: 0 1rem;
+    }
+
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+    .nav-link-active {
+      text-decoration: underline;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+        .logo img {
+            width: 120px;
+        }
+
+    
+
+        .admin-btn {
+            /*background: rgba(255, 28, 96, 0.6);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;*/
+            background-color: #ec4899;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            transition: background-color 0.3s;
+        }
+
+        .admin-btn:hover {
+            background-color: #db2777;
+        
+        }
+    /* Soft FAQ background glow */
+    .faq-glow {
+    position: absolute;
+    inset: -120px -80px;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(236,72,153,0.35), transparent 45%),
+        radial-gradient(circle at 80% 40%, rgba(99,102,241,0.35), transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(56,189,248,0.35), transparent 45%);
+    filter: blur(90px);
+    z-index: -1;
+    }
+
+    /* Hero blur glow (prototype style) */
+    .hero-wrapper {
+    position: relative;
+    overflow: hidden;
+    }
+
+    .hero-glow {
+    position: absolute;
+    inset: -120px;
+    background:
+        radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.55), transparent 45%),
+        radial-gradient(circle at 75% 35%, rgba(255, 255, 255, 0.55), transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.55), transparent 45%);
+    filter: blur(120px);
+    z-index: 0;
+    }
+
+
+</style>
+
+
+    <body class="min-h-screen flex flex-col m-0 p-0">
+
+     <div class="background"></div>
+
+     <nav class="flex flex-wrap justify-between items-center p-6">
+
+    <img src="/static/images/logo.png" alt="Logo" class="h-12 w-auto" />
+
+    <ul class="flex gap-6 text-sm font-medium">
+      <li><a href="{{ url_for('home') }}" class="nav-link {% if active_page=='home' %}nav-link-active{% endif %}">Home</a></li>
+      <li><a href="#report" class="nav-link {% if active_page=='about' %}nav-link-active{% endif %}">About</a></li>
+      <li><a href="{{ url_for('demo') }}" class="nav-link {% if active_page=='demo' %}nav-link-active{% endif %}">Demo</a></li>
+      <li><a href="{{ url_for('faq') }}" class="nav-link {% if active_page=='faq' %}nav-link-active{% endif %}">FAQs</a></li>
+
+    </ul>
+    <div class="flex gap-4">
+      <a href="{{ url_for('contact')}}" class="bg-white text-pink-500 border border-pink-500 hover:bg-pink-100 px-4 py-2 rounded-full text-sm font-semibold">Contact Us</a>
+      <a href="{{ url_for('admin') }}"
+         class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+        Admin Panel
+      </a>
+    </div>
+  </nav>
+
+  <!--HERO (KAT SINI UBAH)-->
+   <section class="hero-wrapper py-20 text-center">
+  
+  <!-- BLUR LAYER -->
+  <div class="hero-glow"></div>
+
+  <!-- CONTENT -->
+  <div class="relative z-10 max-w-4xl mx-auto px-6">
+    <p class="text-sm tracking-wide opacity-90 text-slate-900">
+      FAQs
+    </p>
+
+    <h1 class="mt-3 text-4xl md:text-6xl font-extrabold text-slate-900">
+      ASK US ANYTHING
+    </h1>
+
+    <p class="mt-4 text-sm md:text-base text-slate-900/90">
+      Have Any Questions? We’re here to assist you
+    </p>
+  </div>
+
+</section>
+
+
+    <!-- FAQ GRID -->
+  <main class="flex-1">
+    <section class="relative px-6 py-12">
+  <!-- blur layer -->
+  <div class="faq-glow"></div>
+
+  <p class="text-center text-white/90 mb-8">
+    Some of the questions that could help you
+  </p>
+
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- CARD -->
+        <div class="relative bg-white/85 backdrop-blur-md text-slate-900 rounded-2xl shadow-lg p-6 min-h-[180px]">
+          
+          <h3 class="font-extrabold text-sm mt-2">What is an open port, and why is it a risk?</h3>
+          <p class="text-xs text-slate-700 mt-2 leading-relaxed">
+            An open port is a network port that accepts connections. While many are necessary for services to run,
+            they can be exploited by attackers if not secured properly, leading to unauthorized access or data breaches.
+          </p>
+        </div>
+
+        <div class="relative bg-white/85 backdrop-blur-md text-slate-900 rounded-2xl shadow-lg p-6 min-h-[180px]">
+          
+          <h3 class="font-extrabold text-sm mt-2">Does CyScan store any of my data?</h3>
+          <p class="text-xs text-slate-700 mt-2 leading-relaxed">
+            No. Since CyScan is a simulated tool for learning, it does not collect, store, or transmit any personal or scanned data.
+          </p>
+        </div>
+
+        <div class="relative bg-white/85 backdrop-blur-md text-slate-900 rounded-2xl shadow-lg p-6 min-h-[180px]">
+          
+          <h3 class="font-extrabold text-sm mt-2">How accurate is the machine learning model used in CyScan?</h3>
+          <p class="text-xs text-slate-700 mt-2 leading-relaxed">
+            CyScan uses a simplified ML model for demonstration purposes. It highlights concepts like anomaly detection and risk
+            classification, but it’s not designed for real-world deployment accuracy.
+          </p>
+        </div>
+
+        <div class="relative bg-white/85 backdrop-blur-md text-slate-900 rounded-2xl shadow-lg p-6 min-h-[180px]">
+          
+          <h3 class="font-extrabold text-sm mt-2">Is CyScan suitable for classroom use or student projects?</h3>
+          <p class="text-xs text-slate-700 mt-2 leading-relaxed">
+            Absolutely! CyScan is built for educational use and works well for classroom demos, workshops, or cybersecurity learning projects.
+          </p>
+        </div>
+
+        <div class="relative bg-white/85 backdrop-blur-md text-slate-900 rounded-2xl shadow-lg p-6 min-h-[180px]">
+          
+          <h3 class="font-extrabold text-sm mt-2">Who created CyScan?</h3>
+          <p class="text-xs text-slate-700 mt-2 leading-relaxed">
+            CyScan was developed as a student-led project to educate others on network security fundamentals and the role of machine learning
+            in threat detection.
+          </p>
+        </div>
+
+        <div class="relative bg-white/85 backdrop-blur-md text-slate-900 rounded-2xl shadow-lg p-6 min-h-[180px]">
+          
+          <h3 class="font-extrabold text-sm mt-2">Do I need to install anything to use CyScan?</h3>
+          <p class="text-xs text-slate-700 mt-2 leading-relaxed">
+            No installation is required. CyScan runs entirely in your web browser and can be accessed from any modern device with internet access.
+          </p>
+        </div>
+      </div>
+
+      <!-- CTA BAR (prototype style: wide bar + button on right) -->
+      <div class="max-w-6xl mx-auto mt-10">
+        <div class="bg-white/85 backdrop-blur-md rounded-2xl shadow-lg px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div class="text-slate-900">
+            <h4 class="font-extrabold text-sm">Still have questions?</h4>
+            <p class="text-xs text-slate-700 mt-1">
+              Can’t find the answer you’re looking for? Please chat to our friendly team.
+            </p>
+          </div>
+         <a href="{{ url_for('contact') }}"
+        class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold px-5 py-2 rounded-lg transition">
+        Get in touch
+        </a>
+
+
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center mt-16 mb-0 text-xs opacity-90 bg-blue-800 py-6">Educational purposes only</footer>
+
+  <script>
+    function goContact() {
+      window.location.href = "{{ url_for('contact')}}";
+    }
+  </script>
+</body>
+</html>
